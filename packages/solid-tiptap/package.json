@@ -45,6 +45,7 @@
   },
   "dependencies": {
   },
+  "description": "SolidJS bindings for Tiptap",
   "repository": {
     "url": "https://github.com/lxsmnsyc/solid-tiptap.git",
     "type": "git"
