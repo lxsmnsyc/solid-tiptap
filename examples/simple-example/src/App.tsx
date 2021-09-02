@@ -75,7 +75,7 @@ function OrderedListIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
       {...props}
     >
       <path
-        fillRule="evenodd"
+        fill-rule="evenodd"
         d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z"
       />
     </svg>
@@ -148,8 +148,8 @@ Wow, that’s amazing. Good work, boy! 👏
 
 function Separator() {
   return (
-    <div className="flex items-center" aria-hidden="true">
-      <div className="h-full border-l border-gray-300" />
+    <div class="flex items-center" aria-hidden="true">
+      <div class="h-full border-l border-gray-300" />
     </div>
   );
 }
@@ -196,7 +196,7 @@ interface ToolbarProps {
 function ToolbarContents(props: ToolbarProps): JSX.Element {
   return (
     <div class="p-2 flex space-x-1">
-      <div className="flex space-x-1">
+      <div class="flex space-x-1">
         <Control
           key="paragraph"
           class="font-bold"
@@ -228,7 +228,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         </Control>
       </div>
       <Separator />
-      <div className="flex space-x-1">
+      <div class="flex space-x-1">
         <Control
           key="bold"
           class="font-bold"
@@ -332,14 +332,14 @@ export default function App(): JSX.Element {
   });
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
-      <div className="flex-1 m-16">
+    <div class="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
+      <div class="flex-1 m-16">
         <TailwindToolbar ref={menuRef} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
           <Show when={editor()}>
             {(instance) => <ToolbarContents editor={instance} />}
           </Show>
         </TailwindToolbar>
-        <div className="h-[80vh] bg-white overflow-y-scroll rounded-lg" ref={containerRef} />
+        <div class="h-[80vh] bg-white overflow-y-scroll rounded-lg" ref={containerRef} />
       </div>
     </div>
   );
