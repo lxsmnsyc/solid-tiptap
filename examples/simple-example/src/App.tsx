@@ -6,9 +6,6 @@ import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import BubbleMenu from '@tiptap/extension-bubble-menu';
 import {
-  createEffect,
-  createSignal,
-  For,
   JSX,
   Show,
 } from 'solid-js';
@@ -16,6 +13,22 @@ import {
   TailwindToggle,
   TailwindToolbar,
 } from 'solid-headless';
+
+function ParagraphIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      stroke="none"
+      {...props}
+    >
+      <path
+        d="M9 16h2v4h2V6h2v14h2V6h3V4H9c-3.309 0-6 2.691-6 6s2.691 6 6 6zM9 6h2v8H9c-2.206 0-4-1.794-4-4s1.794-4 4-4z"
+      />
+    </svg>
+  );
+}
 
 function CodeIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
   return (
@@ -27,7 +40,26 @@ function CodeIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
       {...props}
     >
       <path
-        d="m7.375 16.781 1.25-1.562L4.601 12l4.024-3.219-1.25-1.562-5 4a1 1 0 0 0 0 1.562l5 4zm9.25-9.562-1.25 1.562L19.399 12l-4.024 3.219 1.25 1.562 5-4a1 1 0 0 0 0-1.562l-5-4zm-1.649-4.003-4 18-1.953-.434 4-18z"
+        d="M8.293 6.293 2.586 12l5.707 5.707 1.414-1.414L5.414 12l4.293-4.293zm7.414 11.414L21.414 12l-5.707-5.707-1.414 1.414L18.586 12l-4.293 4.293z"
+      />
+    </svg>
+  );
+}
+
+function CodeBlockIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      stroke="none"
+      {...props}
+    >
+      <path
+        d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"
+      />
+      <path
+        d="M9.293 9.293 5.586 13l3.707 3.707 1.414-1.414L8.414 13l2.293-2.293zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414L18.414 13z"
       />
     </svg>
   );
@@ -82,28 +114,6 @@ function BlockquoteIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
     </svg>
   );
 }
-function SelectorIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      {...props}
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-      />
-    </svg>
-  );
-}
-
-function classNames(...classes: (string | boolean | undefined)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
 
 const CONTENT = `
 <h2>
@@ -147,6 +157,7 @@ function Separator() {
 interface ControlProps {
   class: string;
   editor: Editor;
+  title: string;
   key: string;
   onChange: () => void;
   isActive?: (editor: Editor) => boolean;
@@ -157,13 +168,10 @@ function Control(props: ControlProps): JSX.Element {
   const flag = createEditorTransaction(
     () => props.editor,
     (instance) => {
-      if (instance) {
-        if (props.isActive) {
-          return props.isActive(instance);
-        }
-        return instance.isActive(props.key);
+      if (props.isActive) {
+        return props.isActive(instance);
       }
-      return false;
+      return instance.isActive(props.key);
     },
   );
 
@@ -173,6 +181,7 @@ function Control(props: ControlProps): JSX.Element {
       classList={{
         'text-color-600 bg-white bg-opacity-25': flag(),
       }}
+      title={props.title}
       onChange={props.onChange}
     >
       {props.children}
@@ -184,68 +193,18 @@ interface ToolbarProps {
   editor: Editor;
 }
 
-interface DropDownOption {
-  label: string;
-  action: (editor: Editor) => void;
-  isActive: (editor: Editor) => boolean;
-}
-
-const DROPDOWN_OPTIONS: DropDownOption[] = [
-  {
-    label: 'Paragraph',
-    action: (editor) => {
-      editor.chain().focus().setParagraph().run();
-    },
-    isActive: (editor) => editor.isActive('paragraph'),
-  },
-  {
-    label: 'Heading 1',
-    action: (editor) => {
-      editor.chain().focus().toggleHeading({ level: 1 }).run();
-    },
-    isActive: (editor) => editor.isActive('heading', { level: 1 }),
-  },
-  {
-    label: 'Heading 2',
-    action: (editor) => {
-      editor.chain().focus().toggleHeading({ level: 2 }).run();
-    },
-    isActive: (editor) => editor.isActive('heading', { level: 2 }),
-  },
-  {
-    label: 'Bulleted List',
-    action: (editor) => {
-      editor.chain().focus().toggleBulletList().run();
-    },
-    isActive: (editor) => editor.isActive('bulletList'),
-  },
-  {
-    label: 'Ordered List',
-    action: (editor) => {
-      editor.chain().focus().toggleOrderedList().run();
-    },
-    isActive: (editor) => editor.isActive('orderedList'),
-  },
-  {
-    label: 'Block Quote',
-    action: (editor) => {
-      editor.chain().focus().toggleBlockquote().run();
-    },
-    isActive: (editor) => editor.isActive('blockquote'),
-  },
-];
-
 function ToolbarContents(props: ToolbarProps): JSX.Element {
   return (
-    <>
+    <div class="p-2 flex space-x-1">
       <div className="flex space-x-1">
         <Control
           key="paragraph"
           class="font-bold"
           editor={props.editor}
           onChange={() => props.editor.chain().focus().setParagraph().run()}
+          title="Paragraph"
         >
-          P
+          <ParagraphIcon class="w-full h-full m-1" />
         </Control>
         <Control
           key="heading-1"
@@ -253,6 +212,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           editor={props.editor}
           onChange={() => props.editor.chain().focus().setHeading({ level: 1 }).run()}
           isActive={(editor) => editor.isActive('heading', { level: 1 })}
+          title="Heading 1"
         >
           H1
         </Control>
@@ -262,6 +222,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           editor={props.editor}
           onChange={() => props.editor.chain().focus().setHeading({ level: 2 }).run()}
           isActive={(editor) => editor.isActive('heading', { level: 2 })}
+          title="Heading 2"
         >
           H2
         </Control>
@@ -273,6 +234,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class="font-bold"
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleBold().run()}
+          title="Bold"
         >
           B
         </Control>
@@ -281,6 +243,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class="italic"
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleItalic().run()}
+          title="Italic"
         >
           I
         </Control>
@@ -289,8 +252,18 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class="line-through"
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleStrike().run()}
+          title="Strike Through"
         >
           S
+        </Control>
+        <Control
+          key="code"
+          class=""
+          editor={props.editor}
+          onChange={() => props.editor.chain().focus().toggleCode().run()}
+          title="Code"
+        >
+          <CodeIcon class="w-full h-full m-1" />
         </Control>
       </div>
       <Separator />
@@ -300,6 +273,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class=""
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleBulletList().run()}
+          title="Bullet List"
         >
           <BulletListIcon class="w-full h-full m-1" />
         </Control>
@@ -308,6 +282,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class=""
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleOrderedList().run()}
+          title="Ordered List"
         >
           <OrderedListIcon class="w-full h-full m-1" />
         </Control>
@@ -316,6 +291,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class=""
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleBlockquote().run()}
+          title="Blockquote"
         >
           <BlockquoteIcon class="w-full h-full m-1" />
         </Control>
@@ -324,11 +300,12 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class=""
           editor={props.editor}
           onChange={() => props.editor.chain().focus().toggleCodeBlock().run()}
+          title="Code Block"
         >
-          <CodeIcon class="w-full h-full m-1" />
+          <CodeBlockIcon class="w-full h-full m-1" />
         </Control>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -357,7 +334,7 @@ export default function App(): JSX.Element {
   return (
     <div className="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
       <div className="flex-1 m-16">
-        <TailwindToolbar ref={menuRef} class="dynamic-shadow flex space-x-1 p-2 bg-gradient-to-bl from-blue-500 to-indigo-600 text-white rounded-lg" horizontal>
+        <TailwindToolbar ref={menuRef} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
           <Show when={editor()}>
             {(instance) => <ToolbarContents editor={instance} />}
           </Show>

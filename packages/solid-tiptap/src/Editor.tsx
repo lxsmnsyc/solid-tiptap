@@ -41,9 +41,9 @@ function createOptionPatch(
   }));
 }
 
-export function createEditorTransaction<T>(
-  instance: () => Editor | undefined,
-  read: (value: Editor | undefined) => T,
+export function createEditorTransaction<T, V extends Editor | undefined>(
+  instance: () => V,
+  read: (value: V) => T,
 ): () => T {
   const [signal, setSignal] = createSignal([]);
 
