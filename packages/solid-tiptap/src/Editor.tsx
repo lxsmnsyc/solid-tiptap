@@ -13,7 +13,7 @@ export type EditorRef = Editor | ((editor: Editor) => void);
 
 export type BaseEditorOptions = Omit<Partial<EditorOptions>, 'element'>;
 
-export interface EditorProps<T extends HTMLElement> extends BaseEditorOptions {
+export interface UseEditorOptions<T extends HTMLElement> extends BaseEditorOptions {
   element: () => T;
 }
 
@@ -68,7 +68,7 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
 }
 
 export default function useEditor<T extends HTMLElement>(
-  props: EditorProps<T>,
+  props: UseEditorOptions<T>,
 ): () => Editor | undefined {
   const [signal, setSignal] = createSignal<Editor>();
 

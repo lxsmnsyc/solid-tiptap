@@ -3,7 +3,7 @@ export {
   default as createEditor,
   default as useTiptapEditor,
   default as createTiptapEditor,
-  EditorProps,
+  UseEditorOptions,
   EditorRef,
   createEditorTransaction,
 } from './Editor';
