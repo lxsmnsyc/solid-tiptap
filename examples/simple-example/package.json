@@ -1,6 +1,6 @@
 {
   "name": "simple-example",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -23,7 +23,7 @@
     "@tiptap/starter-kit": "^2.0.0-beta.101",
     "solid-headless": "^0.4.0",
     "solid-js": "^1.1.0",
-    "solid-tiptap": "0.2.0",
+    "solid-tiptap": "0.2.1",
     "tailwindcss": "^2.2.4"
   },
   "private": true,
