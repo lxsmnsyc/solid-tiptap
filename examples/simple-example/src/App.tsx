@@ -134,7 +134,7 @@ this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all
 Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
 </p>
 <pre><code class="language-css">body {
-display: none;
+  display: none;
 }</code></pre>
 <p>
 I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
@@ -314,7 +314,9 @@ export default function App(): JSX.Element {
   let containerRef!: HTMLDivElement;
 
   const editor = createTiptapEditor({
-    element: () => containerRef,
+    get element() {
+      return containerRef;
+    },
     get extensions() {
       return [
         StarterKit,

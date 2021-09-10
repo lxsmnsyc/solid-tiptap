@@ -14,7 +14,7 @@ export type EditorRef = Editor | ((editor: Editor) => void);
 export type BaseEditorOptions = Omit<Partial<EditorOptions>, 'element'>;
 
 export interface UseEditorOptions<T extends HTMLElement> extends BaseEditorOptions {
-  element: () => T;
+  element: T;
 }
 
 const WATCHED_PROPERTIES: (keyof BaseEditorOptions)[] = [
@@ -75,7 +75,7 @@ export default function useEditor<T extends HTMLElement>(
   createEffect(() => {
     const instance = new Editor({
       ...props,
-      element: props.element(),
+      element: props.element,
     });
 
     for (let i = 0, len = WATCHED_PROPERTIES.length; i < len; i += 1) {
@@ -90,4 +90,57 @@ export default function useEditor<T extends HTMLElement>(
   });
 
   return signal;
+}
+
+export function useEditorHTML<V extends Editor | undefined>(
+  editor: () => V,
+): () => string | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.getHTML());
+}
+
+export function useEditorJSON<V extends Editor | undefined, R extends Record<string, any>>(
+  editor: () => V,
+): () => R | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.getJSON() as R);
+}
+
+export function useEditorCharacterCount<V extends Editor | undefined>(
+  editor: () => V,
+): () => number | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.getCharacterCount());
+}
+
+export function useEditorIsActive<V extends Editor | undefined, R extends Record<string, any>>(
+  editor: () => V,
+  ...args: [name: () => string, options?: R] | [options: R]
+): () => boolean | undefined {
+  return createEditorTransaction(editor, (instance) => {
+    if (args.length === 2) {
+      return instance?.isActive(
+        args[0](),
+        args[1],
+      );
+    }
+    return instance?.isActive(
+      args[0],
+    );
+  });
+}
+
+export function useEditorIsEmpty<V extends Editor | undefined>(
+  editor: () => V,
+): () => boolean | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.isEmpty);
+}
+
+export function useEditorIsEditable<V extends Editor | undefined>(
+  editor: () => V,
+): () => boolean | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.isEditable);
+}
+
+export function useEditorIsFocused<V extends Editor | undefined>(
+  editor: () => V,
+): () => boolean | undefined {
+  return createEditorTransaction(editor, (instance) => instance?.isFocused);
 }

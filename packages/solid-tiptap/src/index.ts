@@ -6,4 +6,11 @@ export {
   UseEditorOptions,
   EditorRef,
   createEditorTransaction,
+  useEditorCharacterCount,
+  useEditorHTML,
+  useEditorIsActive,
+  useEditorIsEditable,
+  useEditorIsEmpty,
+  useEditorIsFocused,
+  useEditorJSON,
 } from './Editor';
