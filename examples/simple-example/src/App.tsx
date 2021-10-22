@@ -10,8 +10,8 @@ import {
   Show,
 } from 'solid-js';
 import {
-  TailwindToggle,
-  TailwindToolbar,
+  Toggle,
+  Toolbar,
 } from 'solid-headless';
 
 function ParagraphIcon(props: JSX.IntrinsicElements['svg']): JSX.Element {
@@ -176,7 +176,7 @@ function Control(props: ControlProps): JSX.Element {
   );
 
   return (
-    <TailwindToggle
+    <Toggle
       class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400 focus-visible:ring-opacity-75`}
       classList={{
         'text-color-600 bg-white bg-opacity-25': flag(),
@@ -185,7 +185,7 @@ function Control(props: ControlProps): JSX.Element {
       onChange={props.onChange}
     >
       {props.children}
-    </TailwindToggle>
+    </Toggle>
   );
 }
 
@@ -336,11 +336,11 @@ export default function App(): JSX.Element {
   return (
     <div class="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
       <div class="flex-1 m-16">
-        <TailwindToolbar ref={menuRef} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
+        <Toolbar ref={menuRef} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
           <Show when={editor()}>
             {(instance) => <ToolbarContents editor={instance} />}
           </Show>
-        </TailwindToolbar>
+        </Toolbar>
         <div class="h-[80vh] bg-white overflow-y-scroll rounded-lg" ref={containerRef} />
       </div>
     </div>
