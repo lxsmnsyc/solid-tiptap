@@ -6,6 +6,7 @@ import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import BubbleMenu from '@tiptap/extension-bubble-menu';
 import {
+  createSignal,
   JSX,
   Show,
 } from 'solid-js';
@@ -177,6 +178,7 @@ function Control(props: ControlProps): JSX.Element {
 
   return (
     <Toggle
+      defaultPressed={false}
       class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400 focus-visible:ring-opacity-75`}
       classList={{
         'text-color-600 bg-white bg-opacity-25': flag(),
@@ -194,6 +196,7 @@ interface ToolbarProps {
 }
 
 function ToolbarContents(props: ToolbarProps): JSX.Element {
+  console.log('Hello')
   return (
     <div class="p-2 flex space-x-1">
       <div class="flex space-x-1">
@@ -310,38 +313,34 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
 }
 
 export default function App(): JSX.Element {
-  let menuRef!: HTMLDivElement;
-  let containerRef!: HTMLDivElement;
+  const [container, setContainer] = createSignal<HTMLDivElement>();
+  const [menu, setMenu] = createSignal<HTMLDivElement>();
 
-  const editor = createTiptapEditor({
-    get element() {
-      return containerRef;
-    },
-    get extensions() {
-      return [
-        StarterKit,
-        BubbleMenu.configure({
-          element: menuRef,
-        }),
-      ];
-    },
+  const editor = createTiptapEditor(() => ({
+    element: container()!,
+    extensions: [
+      StarterKit,
+      BubbleMenu.configure({
+        element: menu()!,
+      }),
+    ],
     editorProps: {
       attributes: {
         class: 'p-8 focus:outline-none prose max-w-full',
       },
     },
     content: CONTENT,
-  });
+  }));
 
   return (
     <div class="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
       <div class="flex-1 m-16">
-        <Toolbar ref={menuRef} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
-          <Show when={editor()}>
+        <Toolbar ref={setMenu} class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg" horizontal>
+          <Show when={editor()} keyed>
             {(instance) => <ToolbarContents editor={instance} />}
           </Show>
         </Toolbar>
-        <div class="h-[80vh] bg-white overflow-y-scroll rounded-lg" ref={containerRef} />
+        <div class="h-[80vh] bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
       </div>
     </div>
   );

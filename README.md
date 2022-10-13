@@ -19,24 +19,13 @@ import StarterKit from '@tiptap/starter-kit';
 function App() {
   let ref!: HTMLDivElement;
 
-  const editor = createTiptapEditor({
-    get element() {
-      return ref;
-    },
-    get extensions() {
-      return [
-        StarterKit,
-      ];
-    },
+  const editor = createTiptapEditor(() => ({
+    element: ref!,
+    extensions: [
+      StarterKit,
+    ],
     content: `<p>Example Text</p>`,
-  });
-
-  createEffect(() => {
-    const instance = editor();
-    if (instance) {
-      // ...
-    }
-  });
+  }));
 
   return <div id="editor" ref={ref} />;
 }
@@ -150,7 +139,7 @@ createEffect(() => {
 Since `createTiptapEditor` may return `undefined` (the instanciation is scheduled), and you're planning to pass it to another component (e.g. creating `BubbleMenu` or Toolbar), it is recommended to use ternary evaluation (e.g. `<Show>`) to check if the editor is `undefined` or not.
 
 ```js
-const editor = createTiptapEditor({ ... });
+const editor = createTiptapEditor(() => ({ ... }));
 
 <Show when={editor()}>
   {(instance) => <EditorMenu editor={instance} />}
