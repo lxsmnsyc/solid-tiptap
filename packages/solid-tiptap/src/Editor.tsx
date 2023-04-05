@@ -91,6 +91,9 @@ export function useEditorIsActive<V extends Editor | undefined, R extends Record
         args[1],
       );
     }
+    if (typeof args[0] === "function") {
+      return instance?.isActive(args[0]());
+    }
     return instance?.isActive(
       args[0],
     );
