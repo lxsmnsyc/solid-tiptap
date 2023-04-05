@@ -22,12 +22,16 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
 ): () => T {
   const [depend, rerun] = createSignal(undefined, { equals: false });
 
+  function forceUpdate() {
+    rerun()
+  }
+
   createEffect(() => {
     const editor = instance();
     if (editor) {
-      editor.on('transaction', rerun);
+      editor.on('transaction', forceUpdate);
       onCleanup(() => {
-        editor.off('transaction', rerun);
+        editor.off('transaction', forceUpdate);
       });
     }
   });
