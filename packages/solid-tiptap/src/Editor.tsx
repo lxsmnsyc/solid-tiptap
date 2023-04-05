@@ -20,10 +20,10 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
   instance: () => V,
   read: (value: V) => T,
 ): () => T {
-  const [depend, rerun] = createSignal(undefined, { equals: false });
+  const [depend, update] = createSignal(undefined, { equals: false });
 
   function forceUpdate() {
-    rerun()
+    update()
   }
 
   createEffect(() => {
