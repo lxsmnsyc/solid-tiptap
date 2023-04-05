@@ -48,9 +48,7 @@ export default function useEditor<T extends HTMLElement>(
   const [signal, setSignal] = createSignal<Editor>();
 
   createEffect(() => {
-    const instance = new Editor({
-      ...props(),
-    });
+    const instance = new Editor(props());
 
     onCleanup(() => {
       instance.destroy();
