@@ -20,10 +20,10 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
   instance: () => V,
   read: (value: V) => T,
 ): () => T {
-  const [signal, setSignal] = createSignal([]);
+  const [depend, update] = createSignal(undefined, { equals: false });
 
   function forceUpdate() {
-    setSignal([]);
+    update()
   }
 
   createEffect(() => {
@@ -37,7 +37,7 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
   });
 
   return () => {
-    signal();
+    depend();
     return read(instance());
   };
 }
