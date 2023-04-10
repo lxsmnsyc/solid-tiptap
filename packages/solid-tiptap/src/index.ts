@@ -6,7 +6,6 @@ export {
   UseEditorOptions,
   EditorRef,
   createEditorTransaction,
-  useEditorCharacterCount,
   useEditorHTML,
   useEditorIsActive,
   useEditorIsEditable,

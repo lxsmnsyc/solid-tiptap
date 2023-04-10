@@ -196,7 +196,6 @@ interface ToolbarProps {
 }
 
 function ToolbarContents(props: ToolbarProps): JSX.Element {
-  console.log('Hello')
   return (
     <div class="p-2 flex space-x-1">
       <div class="flex space-x-1">
