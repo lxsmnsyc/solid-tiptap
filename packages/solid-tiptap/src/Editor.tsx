@@ -74,12 +74,6 @@ export function useEditorJSON<V extends Editor | undefined, R extends Record<str
   return createEditorTransaction(editor, (instance) => instance?.getJSON() as R);
 }
 
-export function useEditorCharacterCount<V extends Editor | undefined>(
-  editor: () => V,
-): () => number | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.getCharacterCount());
-}
-
 export function useEditorIsActive<V extends Editor | undefined, R extends Record<string, any>>(
   editor: () => V,
   ...args: [name: () => string, options?: R] | [options: R]
