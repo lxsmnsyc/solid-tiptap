@@ -13,3 +13,7 @@ export {
   useEditorIsFocused,
   useEditorJSON,
 } from './Editor';
+
+export * from './NodeViewContent';
+export * from './NodeViewRenderer';
+export * from './NodeViewWrapper';
