@@ -1,14 +1,21 @@
 {
   "npmClient": "pnpm",
-  "packages": ["packages/*", "examples/*"],
+  "packages": [
+    "packages/*",
+    "examples/*"
+  ],
   "command": {
     "version": {
       "exact": true
     },
     "publish": {
-      "allowBranch": ["main", "vdom", "no-vdom"],
+      "allowBranch": [
+        "main",
+        "vdom",
+        "no-vdom"
+      ],
       "registry": "https://registry.npmjs.org/"
     }
   },
-  "version": "0.6.0"
+  "version": "0.7.0"
 }
