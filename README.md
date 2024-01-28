@@ -2,14 +2,22 @@
 
 > SolidJS bindings for [tiptap](https://www.tiptap.dev/)
 
-[![NPM](https://img.shields.io/npm/v/solid-tiptap.svg)](https://www.npmjs.com/package/solid-tiptap) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript) [![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?style=flat-square&logo=codesandbox)](https://codesandbox.io/s/github/LXSMNSYC/solid-tiptap/tree/main/examples/simple-example)
+[![NPM](https://img.shields.io/npm/v/solid-tiptap.svg)](https://www.npmjs.com/package/solid-tiptap) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript) [![Open in StackBlitz](https://img.shields.io/badge/Open%20in-StackBlitz-blue?style=flat-square&logo=stackblitz)](https://stackblitz.com/github/lxsmnsyc/solid-tiptap/tree/main/examples/simple-example)
 
 ![solid-tiptap example](https://github.com/lxsmnsyc/solid-tiptap/blob/main/images/solid-tiptap.png?raw=true)
 
 ## Install
 
 ```bash
+npm i @tiptap/core @tiptap/pm solid-tiptap
+```
+
+```bash
 yarn add @tiptap/core @tiptap/pm solid-tiptap
+```
+
+```bash
+pnpm add @tiptap/core @tiptap/pm solid-tiptap
 ```
 
 ## Usage

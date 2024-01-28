@@ -1,18 +1,13 @@
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-} from 'solid-js';
-import {
-  Editor,
-  EditorOptions,
-} from '@tiptap/core';
+import type { EditorOptions } from '@tiptap/core';
+import { Editor } from '@tiptap/core';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
 
 export type EditorRef = Editor | ((editor: Editor) => void);
 
 export type BaseEditorOptions = Omit<Partial<EditorOptions>, 'element'>;
 
-export interface UseEditorOptions<T extends HTMLElement> extends BaseEditorOptions {
+export interface UseEditorOptions<T extends HTMLElement>
+  extends BaseEditorOptions {
   element: T;
 }
 
@@ -23,7 +18,7 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
   const [depend, update] = createSignal(undefined, { equals: false });
 
   function forceUpdate() {
-    update()
+    update();
   }
 
   createEffect(() => {
@@ -65,46 +60,45 @@ export default function useEditor<T extends HTMLElement>(
 export function useEditorHTML<V extends Editor | undefined>(
   editor: () => V,
 ): () => string | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.getHTML());
+  return createEditorTransaction(editor, instance => instance?.getHTML());
 }
 
-export function useEditorJSON<V extends Editor | undefined, R extends Record<string, any>>(
-  editor: () => V,
-): () => R | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.getJSON() as R);
+export function useEditorJSON<
+  V extends Editor | undefined,
+  R extends Record<string, any>,
+>(editor: () => V): () => R | undefined {
+  return createEditorTransaction(editor, instance => instance?.getJSON() as R);
 }
 
-export function useEditorIsActive<V extends Editor | undefined, R extends Record<string, any>>(
+export function useEditorIsActive<
+  V extends Editor | undefined,
+  R extends Record<string, any>,
+>(
   editor: () => V,
   ...args: [name: () => string, options?: R] | [options: R]
 ): () => boolean | undefined {
-  return createEditorTransaction(editor, (instance) => {
+  return createEditorTransaction(editor, instance => {
     if (args.length === 2) {
-      return instance?.isActive(
-        args[0](),
-        args[1],
-      );
+      return instance?.isActive(args[0](), args[1]);
     }
-    return instance?.isActive(
-      args[0],
-    );
+    return instance?.isActive(args[0]);
   });
 }
 
 export function useEditorIsEmpty<V extends Editor | undefined>(
   editor: () => V,
 ): () => boolean | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.isEmpty);
+  return createEditorTransaction(editor, instance => instance?.isEmpty);
 }
 
 export function useEditorIsEditable<V extends Editor | undefined>(
   editor: () => V,
 ): () => boolean | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.isEditable);
+  return createEditorTransaction(editor, instance => instance?.isEditable);
 }
 
 export function useEditorIsFocused<V extends Editor | undefined>(
   editor: () => V,
 ): () => boolean | undefined {
-  return createEditorTransaction(editor, (instance) => instance?.isFocused);
+  return createEditorTransaction(editor, instance => instance?.isFocused);
 }

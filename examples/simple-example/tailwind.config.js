@@ -1,11 +1,7 @@
-module.exports = {
+export default {
   mode: 'jit',
-  content: [
-    './src/**/*.tsx',
-  ],
+  content: ['./src/**/*.tsx'],
   darkMode: 'class', // or 'media' or 'class'
   variants: {},
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [require('@tailwindcss/typography')],
 };
