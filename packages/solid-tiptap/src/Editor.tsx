@@ -67,7 +67,7 @@ export function useEditorJSON<
   V extends Editor | undefined,
   R extends Record<string, any>,
 >(editor: () => V): () => R | undefined {
-  return createEditorTransaction(editor, instance => instance?.getJSON() as R);
+  return createEditorTransaction(editor, instance => instance?.getJSON() as R | undefined);
 }
 
 export function useEditorIsActive<

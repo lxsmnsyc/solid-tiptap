@@ -48,7 +48,7 @@ function App() {
 ```ts
 const isBold = createEditorTransaction(
   () => props.editor, // Editor instance from createTiptapEditor
-  (editor) => editor.isActive('bold'), 
+  (editor) => editor.isActive("bold")
 );
 
 createEffect(() => {
@@ -59,16 +59,6 @@ createEffect(() => {
 ```
 
 There are out-of-the-box utilities that wraps `createEditorTransaction` based on the [Editor API](https://www.tiptap.dev/api/editor):
-
-- `useEditorCharacterCount`: reactively subscribe to `getCharacterCount`.
-
-```js
-const count = useEditorCharacterCount(() => props.editor);
-
-createEffect(() => {
-  console.log('Character Count:', count());
-});
-```
 
 - `useEditorHTML`: reactively subscribe to `getEditorHTML`.
 
@@ -83,9 +73,13 @@ createEffect(() => {
 - `useEditorIsActive`: reactively subscribe to `isActive`.
 
 ```js
-const isHeading = useEditorIsActive(() => props.editor, () => 'heading', {
-  level: 1,
-});
+const isHeading = useEditorIsActive(
+  () => props.editor,
+  () => "heading",
+  {
+    level: 1,
+  }
+);
 
 createEffect(() => {
   if (isHeading()) {

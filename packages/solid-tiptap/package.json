@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/cjs/production/index.cjs",
@@ -28,8 +28,8 @@
   ],
   "name": "solid-tiptap",
   "devDependencies": {
-    "@tiptap/core": "^2.1.16",
-    "@tiptap/pm": "^2.1.16",
+    "@tiptap/core": "^3.0.1",
+    "@tiptap/pm": "^3.0.1",
     "@types/node": "^20.11.8",
     "pridepack": "2.6.0",
     "solid-js": "^1.8.12",
@@ -37,8 +37,8 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@tiptap/core": "^2",
-    "@tiptap/pm": "^2",
+    "@tiptap/core": "^3",
+    "@tiptap/pm": "^3",
     "solid-js": "^1.7"
   },
   "scripts": {
