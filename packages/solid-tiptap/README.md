@@ -1,39 +1,46 @@
 # solid-tiptap
 
-> SolidJS bindings for [tiptap](https://www.tiptap.dev/)
+> SolidJS bindings for [Tiptap](https://tiptap.dev/)
 
-[![NPM](https://img.shields.io/npm/v/solid-tiptap.svg)](https://www.npmjs.com/package/solid-tiptap) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript) [![Open in StackBlitz](https://img.shields.io/badge/Open%20in-StackBlitz-blue?style=flat-square&logo=stackblitz)](https://stackblitz.com/github/lxsmnsyc/solid-tiptap/tree/main/examples/simple-example)
+[![NPM](https://img.shields.io/npm/v/solid-tiptap.svg)](https://www.npmjs.com/package/solid-tiptap) [![Open in StackBlitz](https://img.shields.io/badge/Open%20in-StackBlitz-blue?style=flat-square&logo=stackblitz)](https://stackblitz.com/github/lxsmnsyc/solid-tiptap/tree/main/examples/simple-example)
 
 ![solid-tiptap example](https://github.com/lxsmnsyc/solid-tiptap/blob/main/images/solid-tiptap.png?raw=true)
 
 ## Install
 
 ```bash
-npm i @tiptap/core @tiptap/pm solid-tiptap
+npm i solid-tiptap @tiptap/core @tiptap/pm
 ```
 
 ```bash
-yarn add @tiptap/core @tiptap/pm solid-tiptap
+yarn add solid-tiptap @tiptap/core @tiptap/pm
 ```
 
 ```bash
-pnpm add @tiptap/core @tiptap/pm solid-tiptap
+pnpm add solid-tiptap @tiptap/core @tiptap/pm
 ```
+
+You also need the Tiptap extensions you plan to use, such as `@tiptap/starter-kit`.
+
+## Requirements
+
+- `solid-js` 1.7 or later.
+- `@tiptap/core` and `@tiptap/pm` 3.x.
+
+Use `solid-tiptap@0.7` for Tiptap 2.
 
 ## Usage
 
-```jsx
-import { createTiptapEditor } from 'solid-tiptap';
+```tsx
 import StarterKit from '@tiptap/starter-kit';
+import { createTiptapEditor } from 'solid-tiptap';
 
 function App() {
   let ref!: HTMLDivElement;
 
   const editor = createTiptapEditor(() => ({
-    element: ref!,
-    extensions: [
-      StarterKit,
-    ],
+    element: ref,
+    extensions: [StarterKit],
     content: `<p>Example Text</p>`,
   }));
 
@@ -41,114 +48,167 @@ function App() {
 }
 ```
 
-### Transactions
+`createTiptapEditor` returns an accessor for the editor.
 
-`createEditorTransaction` provides a way to reactively subscribe to editor changes.
+- The editor is created in an effect, after the element is mounted. The accessor returns `undefined` until then.
+- The options function is tracked. When a signal it reads changes, the old editor is destroyed and a new one is created.
+- The editor is destroyed when the owning component unmounts.
+
+Because the options are tracked, read signals that should not recreate the editor with `untrack`.
+
+```tsx
+import { untrack } from 'solid-js';
+
+const editor = createTiptapEditor(() => ({
+  element: ref,
+  extensions: [StarterKit],
+  // Changing `initialContent` later does not recreate the editor.
+  content: untrack(initialContent),
+}));
+```
+
+Use the editor's own commands to update it after it is created.
 
 ```ts
+editor()?.commands.setContent('<p>New content</p>');
+editor()?.setEditable(false);
+```
+
+### Passing the editor to other components
+
+Render the components that need the editor inside `<Show>`, so they only run once the editor exists.
+
+```tsx
+const editor = createTiptapEditor(() => ({ ... }));
+
+<Show when={editor()} keyed>
+  {(instance) => <Toolbar editor={instance} />}
+</Show>
+```
+
+`keyed` passes the editor itself to the children. Without it, Solid passes an accessor, so you would write `editor={instance()}`.
+
+### Bubble and floating menus
+
+Tiptap's `BubbleMenu` and `FloatingMenu` extensions take an `element` option. Pass a mounted element the same way you pass the editor element.
+
+```tsx
+import BubbleMenu from '@tiptap/extension-bubble-menu';
+
+function App() {
+  let container!: HTMLDivElement;
+  let menu!: HTMLDivElement;
+
+  const editor = createTiptapEditor(() => ({
+    element: container,
+    extensions: [StarterKit, BubbleMenu.configure({ element: menu })],
+  }));
+
+  return (
+    <>
+      <div ref={menu}>
+        <Show when={editor()} keyed>
+          {(instance) => <Toolbar editor={instance} />}
+        </Show>
+      </div>
+      <div ref={container} />
+    </>
+  );
+}
+```
+
+### Reading editor state
+
+Tiptap does not notify Solid when the editor changes. `createEditorTransaction` reads a value again after every editor transaction, so you can use it in JSX and effects.
+
+```ts
+import { createEditorTransaction } from 'solid-tiptap';
+
 const isBold = createEditorTransaction(
-  () => props.editor, // Editor instance from createTiptapEditor
-  (editor) => editor.isActive("bold")
+  () => props.editor,
+  (editor) => editor.isActive('bold'),
 );
 
 createEffect(() => {
   if (isBold()) {
-    // do something
+    // ...
   }
 });
 ```
 
-There are out-of-the-box utilities that wraps `createEditorTransaction` based on the [Editor API](https://www.tiptap.dev/api/editor):
+The read function receives whatever the first accessor returns. If that can be `undefined`, handle it in the read function.
 
-- `useEditorHTML`: reactively subscribe to `getEditorHTML`.
-
-```js
-const html = useEditorHTML(() => props.editor);
-
-createEffect(() => {
-  updateHTML(html());
-});
-```
-
-- `useEditorIsActive`: reactively subscribe to `isActive`.
-
-```js
-const isHeading = useEditorIsActive(
-  () => props.editor,
-  () => "heading",
-  {
-    level: 1,
-  }
+```ts
+const length = createEditorTransaction(
+  editor,
+  (instance) => instance?.state.doc.textContent.length ?? 0,
 );
+```
+
+### Helpers
+
+Each helper wraps `createEditorTransaction` for one part of the [Editor API](https://tiptap.dev/docs/editor/api/editor). Each takes an editor accessor, which may return `undefined`. Each returns an accessor that returns `undefined` while there is no editor.
+
+| Helper                | Reads                  | Returns       |
+| --------------------- | ---------------------- | ------------- |
+| `useEditorHTML`       | `editor.getHTML()`     | `string`      |
+| `useEditorJSON`       | `editor.getJSON()`     | `JSONContent` |
+| `useEditorIsActive`   | `editor.isActive(...)` | `boolean`     |
+| `useEditorIsEmpty`    | `editor.isEmpty`       | `boolean`     |
+| `useEditorIsEditable` | `editor.isEditable`    | `boolean`     |
+| `useEditorIsFocused`  | `editor.isFocused`     | `boolean`     |
+
+```ts
+const html = useEditorHTML(editor);
 
 createEffect(() => {
-  if (isHeading()) {
-    // do something
-  }
+  saveHTML(html());
 });
 ```
 
-- `useEditorIsEditable`: reactively subscribe to `isEditable`.
-
-```js
-const isEditable = useEditorIsEditable(() => props.editor);
-
-createEffect(() => {
-  if (isEditable()) {
-    // do something
-  }
-});
-```
-
-- `useEditorIsEmpty`: reactively subscribe to `isEmpty`.
-
-```js
-const isEmpty = useEditorIsEmpty(() => props.editor);
-
-createEffect(() => {
-  if (isEmpty()) {
-    // do something
-  }
-});
-```
-
-- `useEditorIsFocused`: reactively subscribe to `isFocused`.
-
-```js
-const isFocused = useEditorIsFocused(() => props.editor);
-
-createEffect(() => {
-  if (isFocused()) {
-    // do something
-  }
-});
-```
-
-- `useEditorJSON`: reactively subscribe to `getJSON`.
-
-```js
-const json = useEditorJSON(() => props.editor);
+```ts
+const json = useEditorJSON(editor);
 
 createEffect(() => {
   const data = json();
-
   if (data) {
     uploadJSON(data);
   }
 });
 ```
 
-## Tips
+`useEditorIsActive` takes a name accessor with optional attributes, a name accessor alone, or attributes alone.
 
-Since `createTiptapEditor` may return `undefined` (the instanciation is scheduled), and you're planning to pass it to another component (e.g. creating `BubbleMenu` or Toolbar), it is recommended to use ternary evaluation (e.g. `<Show>`) to check if the editor is `undefined` or not.
+```ts
+// A node or mark by name.
+const isBold = useEditorIsActive(editor, () => 'bold');
 
-```js
-const editor = createTiptapEditor(() => ({ ... }));
+// A node or mark by name and attributes.
+const isHeading = useEditorIsActive(editor, () => 'heading', { level: 1 });
 
-<Show when={editor()}>
-  {(instance) => <EditorMenu editor={instance} />}
-</Show>
+// Any node or mark with these attributes.
+const isCentered = useEditorIsActive(editor, { textAlign: 'center' });
 ```
+
+## API
+
+### `createTiptapEditor(options)`
+
+Creates a Tiptap editor. Also exported as `createEditor`, `useEditor` and `useTiptapEditor`.
+
+- `options` is a function that returns Tiptap's [editor options](https://tiptap.dev/docs/editor/api/editor#settings). `element` is required.
+- Returns `() => Editor | undefined`.
+
+### `createEditorTransaction(editor, read)`
+
+- `editor` is a function that returns an `Editor` or `undefined`.
+- `read` is called with the result of `editor()`. Its result is returned by the accessor.
+- Returns an accessor that runs `read` again after every editor transaction.
+
+### Types
+
+- `UseEditorOptions<T extends HTMLElement>` is the options type for `createTiptapEditor`.
+- `BaseEditorOptions` is Tiptap's `EditorOptions` without `element`, with every field optional.
 
 ## Sponsors
 
