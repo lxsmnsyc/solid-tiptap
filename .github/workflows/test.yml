@@ -33,9 +33,9 @@ jobs:
 
       - run: pnpm fmt:check
 
+      # The example and the type-aware lint read the package's types from `dist`, so the build runs first.
+      - run: pnpm build
+
       - run: pnpm lint
 
       - run: pnpm type-check
-
-      # Builds the package and the example.
-      - run: pnpm build
