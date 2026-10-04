@@ -1,10 +1,11 @@
 name: Test
 
-# Checks every pull request and every push to `main`.
+# Checks every pull request and every push to `main` and `1.x`.
 on:
   push:
     branches:
       - main
+      - 1.x
   pull_request:
 
 # A newer push to the same branch or pull request makes the older run useless.
@@ -39,3 +40,5 @@ jobs:
       - run: pnpm lint
 
       - run: pnpm type-check
+
+      - run: pnpm test

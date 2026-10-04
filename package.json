@@ -13,6 +13,7 @@
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "release": "node scripts/publish.ts",
+    "test": "pnpm -r run test",
     "type-check": "tsc --noEmit && pnpm -r run type-check"
   },
   "devDependencies": {

@@ -9,25 +9,26 @@
 ## Install
 
 ```bash
-npm i solid-tiptap @tiptap/core @tiptap/pm
+npm i solid-tiptap@next @tiptap/core @tiptap/pm
 ```
 
 ```bash
-yarn add solid-tiptap @tiptap/core @tiptap/pm
+yarn add solid-tiptap@next @tiptap/core @tiptap/pm
 ```
 
 ```bash
-pnpm add solid-tiptap @tiptap/core @tiptap/pm
+pnpm add solid-tiptap@next @tiptap/core @tiptap/pm
 ```
 
 You also need the Tiptap extensions you plan to use, such as `@tiptap/starter-kit`.
 
 ## Requirements
 
-- `solid-js` 1.7 or later.
+- `solid-js` 2.0 or later.
 - `@tiptap/core` and `@tiptap/pm` 3.x.
+- Node.js 22.12 or later, if you import the package in Node.js.
 
-Use `solid-tiptap@0.7` for Tiptap 2.
+Use `solid-tiptap@0.8` for Solid 1.x, and `solid-tiptap@0.7` for Solid 1.x with Tiptap 2.
 
 ## Usage
 
@@ -50,7 +51,7 @@ function App() {
 
 `createTiptapEditor` returns an accessor for the editor.
 
-- The editor is created in an effect, after the element is mounted. The accessor returns `undefined` until then.
+- The editor is created after the component mounts, once `element` is set. The accessor returns `undefined` until then.
 - The options function is tracked. When a signal it reads changes, the old editor is destroyed and a new one is created.
 - The editor is destroyed when the owning component unmounts.
 
@@ -87,6 +88,21 @@ const editor = createTiptapEditor(() => ({ ... }));
 ```
 
 `keyed` passes the editor itself to the children. Without it, Solid passes an accessor, so you would write `editor={instance()}`.
+
+### Signal refs
+
+`element` also accepts `undefined` and `null`. The editor waits until the element is set, so a signal ref works without a non-null assertion.
+
+```tsx
+const [element, setElement] = createSignal<HTMLDivElement>();
+
+const editor = createTiptapEditor(() => ({
+  element: element(),
+  extensions: [StarterKit],
+}));
+
+return <div ref={setElement} />;
+```
 
 ### Bubble and floating menus
 
@@ -129,11 +145,19 @@ const isBold = createEditorTransaction(
   (editor) => editor.isActive('bold'),
 );
 
-createEffect(() => {
-  if (isBold()) {
+createEffect(isBold, (bold) => {
+  if (bold) {
     // ...
   }
 });
+```
+
+Like any Solid 2 signal, the new value is visible after Solid applies queued updates. Call `flush()` from `solid-js` if you need it right away, for example in a test.
+
+```ts
+editor.commands.setContent('<p>Bye</p>');
+flush();
+html(); // '<p>Bye</p>'
 ```
 
 The read function receives whatever the first accessor returns. If that can be `undefined`, handle it in the read function.
@@ -161,16 +185,15 @@ Each helper wraps `createEditorTransaction` for one part of the [Editor API](htt
 ```ts
 const html = useEditorHTML(editor);
 
-createEffect(() => {
-  saveHTML(html());
+createEffect(html, (value) => {
+  saveHTML(value);
 });
 ```
 
 ```ts
 const json = useEditorJSON(editor);
 
-createEffect(() => {
-  const data = json();
+createEffect(json, (data) => {
   if (data) {
     uploadJSON(data);
   }
@@ -196,7 +219,7 @@ const isCentered = useEditorIsActive(editor, { textAlign: 'center' });
 
 Creates a Tiptap editor. Also exported as `createEditor`, `useEditor` and `useTiptapEditor`.
 
-- `options` is a function that returns Tiptap's [editor options](https://tiptap.dev/docs/editor/api/editor#settings). `element` is required.
+- `options` is a function that returns Tiptap's [editor options](https://tiptap.dev/docs/editor/api/editor#settings). No editor is created while `element` is `undefined` or `null`.
 - Returns `() => Editor | undefined`.
 
 ### `createEditorTransaction(editor, read)`
@@ -207,7 +230,7 @@ Creates a Tiptap editor. Also exported as `createEditor`, `useEditor` and `useTi
 
 ### Types
 
-- `UseEditorOptions<T extends HTMLElement>` is the options type for `createTiptapEditor`.
+- `UseEditorOptions` is the options type for `createTiptapEditor`. Its `element` is `HTMLElement | null | undefined`.
 - `BaseEditorOptions` is Tiptap's `EditorOptions` without `element`, with every field optional.
 
 ## Sponsors

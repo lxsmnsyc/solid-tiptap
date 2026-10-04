@@ -26,14 +26,8 @@
   ],
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.cts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -42,23 +36,31 @@
   "scripts": {
     "build": "tsdown",
     "prepublishOnly": "pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "type-check": "tsc --noEmit",
     "watch": "tsdown --watch"
   },
   "devDependencies": {
+    "@solidjs/vite-plugin": "3.0.0-next.47",
+    "@solidjs/web": "2.0.0-rc.13",
     "@tiptap/core": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "@types/node": "^26.6.4",
+    "jsdom": "^30.1.1",
     "publint": "^0.3.25",
-    "solid-js": "^1.9.15",
+    "solid-js": "2.0.0-rc.13",
     "tsdown": "^0.23.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
   },
   "peerDependencies": {
     "@tiptap/core": "^3",
     "@tiptap/pm": "^3",
-    "solid-js": "^1.7"
+    "solid-js": "^2.0.0-rc.13"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   }
 }

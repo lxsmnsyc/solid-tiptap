@@ -7,7 +7,7 @@
  * and the tarball is published with npm. Packing with pnpm rewrites `workspace:` ranges.
  *
  * A version that is already on npm is skipped. The release workflow runs this on every push
- * to `main` without pending changesets, and most of those have nothing new to publish.
+ * to the release branch without pending changesets, and most of those have nothing new to publish.
  */
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
