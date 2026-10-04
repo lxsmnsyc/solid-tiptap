@@ -1,12 +1,12 @@
 name: Release
 
-# Every push to `main` either opens or updates a "Version Packages" pull request
+# Every push to `1.x` either opens or updates a "Version Packages" pull request
 # from the pending changesets. Once that pull request is merged, the next push
 # publishes the versions that are not on npm yet.
 on:
   push:
     branches:
-      - main
+      - 1.x
 
 # Two releases running at once could both try to publish the same version.
 concurrency:
@@ -44,12 +44,14 @@ jobs:
 
       - run: pnpm fmt:check
 
+      # The example and the type-aware lint read the package's types from `dist`, so the build runs first.
+      - run: pnpm build
+
       - run: pnpm lint
 
       - run: pnpm type-check
 
-      # Publishing builds again. Building here stops a broken release before the version pull request merges.
-      - run: pnpm --filter solid-tiptap build
+      - run: pnpm test
 
       - uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
