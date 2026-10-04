@@ -1,33 +1,29 @@
 {
   "name": "simple-example",
-  "type": "module",
   "version": "0.8.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
-  },
-  "devDependencies": {
-    "postcss": "^8.5.6",
-    "typescript": "^5.9.2",
-    "vite": "^6",
-    "vite-plugin-solid": "^2.11.8"
+    "dev": "vite",
+    "serve": "vite preview",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.7.3",
-    "@tailwindcss/postcss": "^4.1.11",
-    "@tailwindcss/typography": "^0.5.16",
-    "@tiptap/core": "^3.0.1",
-    "@tiptap/extension-bubble-menu": "^3.0.1",
-    "@tiptap/pm": "^3.0.1",
-    "@tiptap/starter-kit": "^3.0.1",
-    "solid-js": "^1.9.7",
-    "solid-tiptap": "0.8.0",
-    "tailwindcss": "^4.1.11",
-    "terracotta": "^1.0.6"
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/extension-bubble-menu": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "solid-js": "^1.9.15",
+    "solid-tiptap": "workspace:*",
+    "terracotta": "^1.3.0"
   },
-  "private": true,
-  "publishConfig": {
-    "access": "restricted"
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vite-plugin-solid": "^2.11.14"
   }
 }

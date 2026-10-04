@@ -1,4 +1,4 @@
-import type { Editor } from '@tiptap/core';
+import type { ChainedCommands, Editor } from '@tiptap/core';
 import BubbleMenu from '@tiptap/extension-bubble-menu';
 import StarterKit from '@tiptap/starter-kit';
 import type { JSX } from 'solid-js';
@@ -6,9 +6,7 @@ import { Show, createSignal } from 'solid-js';
 import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap';
 import { Toggle, Toolbar } from 'terracotta';
 
-function ParagraphIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function ParagraphIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +21,7 @@ function ParagraphIcon(
   );
 }
 
-function CodeIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function CodeIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -40,9 +36,7 @@ function CodeIcon(
   );
 }
 
-function CodeBlockIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function CodeBlockIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -58,9 +52,7 @@ function CodeBlockIcon(
   );
 }
 
-function OrderedListIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function OrderedListIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +70,7 @@ function OrderedListIcon(
   );
 }
 
-function BulletListIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function BulletListIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -98,9 +88,7 @@ function BulletListIcon(
   );
 }
 
-function BlockquoteIcon(
-  props: JSX.IntrinsicElements['svg'] & { title: string },
-): JSX.Element {
+function BlockquoteIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -143,10 +131,10 @@ I know, I know, this is impressive. It’s only the tip of the iceberg though. G
 Wow, that’s amazing. Good work, boy! 👏
 <br />
 — Mom
-</blockquote>    
+</blockquote>
 `;
 
-function Separator() {
+function Separator(): JSX.Element {
   return (
     <div class="flex items-center" aria-hidden="true">
       <div class="h-full border-l border-gray-300" />
@@ -155,35 +143,32 @@ function Separator() {
 }
 
 interface ControlProps {
-  class: string;
+  class?: string;
   editor: Editor;
   title: string;
-  key: string;
-  onChange: () => void;
-  isActive?: (editor: Editor) => boolean;
+  // Adds this control's command to a focused command chain.
+  command: (chain: ChainedCommands) => ChainedCommands;
+  isActive: (editor: Editor) => boolean;
   children: JSX.Element;
 }
 
 function Control(props: ControlProps): JSX.Element {
-  const flag = createEditorTransaction(
+  const active = createEditorTransaction(
     () => props.editor,
-    instance => {
-      if (props.isActive) {
-        return props.isActive(instance);
-      }
-      return instance.isActive(props.key);
-    },
+    (instance) => props.isActive(instance),
   );
 
   return (
     <Toggle
-      defaultPressed={false}
-      class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400 focus-visible:ring-opacity-75`}
+      pressed={active()}
+      class={`${props.class ?? ''} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400`}
       classList={{
-        'bg-white/25': flag(),
+        'bg-white/25': active(),
       }}
       title={props.title}
-      onChange={props.onChange}
+      onChange={() => {
+        props.command(props.editor.chain().focus()).run();
+      }}
     >
       {props.children}
     </Toggle>
@@ -199,34 +184,28 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
     <div class="p-2 flex space-x-1">
       <div class="flex space-x-1">
         <Control
-          key="paragraph"
           class="font-bold"
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().setParagraph().run()}
+          command={(chain) => chain.setParagraph()}
+          isActive={(editor) => editor.isActive('paragraph')}
           title="Paragraph"
         >
           <ParagraphIcon title="Paragraph" class="w-full h-full m-1" />
         </Control>
         <Control
-          key="heading-1"
           class="font-bold"
           editor={props.editor}
-          onChange={() =>
-            props.editor.chain().focus().setHeading({ level: 1 }).run()
-          }
-          isActive={editor => editor.isActive('heading', { level: 1 })}
+          command={(chain) => chain.setHeading({ level: 1 })}
+          isActive={(editor) => editor.isActive('heading', { level: 1 })}
           title="Heading 1"
         >
           H1
         </Control>
         <Control
-          key="heading-2"
           class="font-bold"
           editor={props.editor}
-          onChange={() =>
-            props.editor.chain().focus().setHeading({ level: 2 }).run()
-          }
-          isActive={editor => editor.isActive('heading', { level: 2 })}
+          command={(chain) => chain.setHeading({ level: 2 })}
+          isActive={(editor) => editor.isActive('heading', { level: 2 })}
           title="Heading 2"
         >
           H2
@@ -235,37 +214,36 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
       <Separator />
       <div class="flex space-x-1">
         <Control
-          key="bold"
           class="font-bold"
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleBold().run()}
+          command={(chain) => chain.toggleBold()}
+          isActive={(editor) => editor.isActive('bold')}
           title="Bold"
         >
           B
         </Control>
         <Control
-          key="italic"
           class="italic"
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleItalic().run()}
+          command={(chain) => chain.toggleItalic()}
+          isActive={(editor) => editor.isActive('italic')}
           title="Italic"
         >
           I
         </Control>
         <Control
-          key="strike"
           class="line-through"
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleStrike().run()}
+          command={(chain) => chain.toggleStrike()}
+          isActive={(editor) => editor.isActive('strike')}
           title="Strike Through"
         >
           S
         </Control>
         <Control
-          key="code"
-          class=""
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleCode().run()}
+          command={(chain) => chain.toggleCode()}
+          isActive={(editor) => editor.isActive('code')}
           title="Code"
         >
           <CodeIcon title="Code" class="w-full h-full m-1" />
@@ -274,39 +252,33 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
       <Separator />
       <div class="flex space-x-1">
         <Control
-          key="bulletList"
-          class=""
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleBulletList().run()}
+          command={(chain) => chain.toggleBulletList()}
+          isActive={(editor) => editor.isActive('bulletList')}
           title="Bullet List"
         >
-          <BulletListIcon title="Unordered List" class="w-full h-full m-1" />
+          <BulletListIcon title="Bullet List" class="w-full h-full m-1" />
         </Control>
         <Control
-          key="orderedList"
-          class=""
           editor={props.editor}
-          onChange={() =>
-            props.editor.chain().focus().toggleOrderedList().run()
-          }
+          command={(chain) => chain.toggleOrderedList()}
+          isActive={(editor) => editor.isActive('orderedList')}
           title="Ordered List"
         >
           <OrderedListIcon title="Ordered List" class="w-full h-full m-1" />
         </Control>
         <Control
-          key="blockquote"
-          class=""
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleBlockquote().run()}
+          command={(chain) => chain.toggleBlockquote()}
+          isActive={(editor) => editor.isActive('blockquote')}
           title="Blockquote"
         >
           <BlockquoteIcon title="Blockquote" class="w-full h-full m-1" />
         </Control>
         <Control
-          key="codeBlock"
-          class=""
           editor={props.editor}
-          onChange={() => props.editor.chain().focus().toggleCodeBlock().run()}
+          command={(chain) => chain.toggleCodeBlock()}
+          isActive={(editor) => editor.isActive('codeBlock')}
           title="Code Block"
         >
           <CodeBlockIcon title="Code Block" class="w-full h-full m-1" />
@@ -340,17 +312,21 @@ export default function App(): JSX.Element {
     <div class="w-screen h-screen bg-gradient-to-bl from-sky-400 to-blue-500 flex items-center justify-center">
       <div class="flex-1 m-16">
         <Toolbar
-          ref={setMenu}
+          ref={(element) => {
+            setMenu(element);
+          }}
           class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded-lg"
           horizontal
         >
           <Show when={editor()} keyed>
-            {instance => <ToolbarContents editor={instance} />}
+            {(instance) => <ToolbarContents editor={instance} />}
           </Show>
         </Toolbar>
         <div
           class="h-[80vh] bg-white overflow-y-scroll rounded-lg"
-          ref={setContainer}
+          ref={(element) => {
+            setContainer(element);
+          }}
         />
       </div>
     </div>
