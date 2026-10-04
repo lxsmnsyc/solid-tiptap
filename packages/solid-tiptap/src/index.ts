@@ -11,7 +11,4 @@ export {
   useEditorJSON,
   default as useTiptapEditor,
 } from './Editor';
-export type {
-  EditorRef,
-  UseEditorOptions,
-} from './Editor';
+export type { BaseEditorOptions, EditorRef, UseEditorOptions } from './Editor';
