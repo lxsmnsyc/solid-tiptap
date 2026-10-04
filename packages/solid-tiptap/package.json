@@ -1,67 +1,64 @@
 {
+  "name": "solid-tiptap",
   "version": "0.8.0",
-  "type": "module",
-  "types": "./dist/types/index.d.ts",
-  "main": "./dist/cjs/production/index.cjs",
-  "module": "./dist/esm/production/index.mjs",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "development": {
-        "require": "./dist/cjs/development/index.cjs",
-        "import": "./dist/esm/development/index.mjs"
-      },
-      "require": "./dist/cjs/production/index.cjs",
-      "import": "./dist/esm/production/index.mjs"
-    }
+  "description": "SolidJS bindings for Tiptap",
+  "keywords": [
+    "editor",
+    "prosemirror",
+    "rich-text",
+    "solid-js",
+    "tiptap"
+  ],
+  "homepage": "https://github.com/lxsmnsyc/solid-tiptap/tree/main/packages/solid-tiptap",
+  "bugs": {
+    "url": "https://github.com/lxsmnsyc/solid-tiptap/issues"
+  },
+  "license": "MIT",
+  "author": "Alexis Munsayac",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lxsmnsyc/solid-tiptap.git",
+    "directory": "packages/solid-tiptap"
   },
   "files": [
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
-  "license": "MIT",
-  "keywords": [
-    "pridepack"
-  ],
-  "name": "solid-tiptap",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "prepublishOnly": "pnpm run build",
+    "type-check": "tsc --noEmit",
+    "watch": "tsdown --watch"
+  },
   "devDependencies": {
-    "@tiptap/core": "^3.0.1",
-    "@tiptap/pm": "^3.0.1",
-    "@types/node": "^24.2.0",
-    "pridepack": "2.6.4",
-    "solid-js": "^1.9.7",
-    "tslib": "^2.8.1",
-    "typescript": "^5.9.2"
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "publint": "^0.3.25",
+    "solid-js": "^1.9.15",
+    "tsdown": "^0.23.0",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "@tiptap/core": "^3",
     "@tiptap/pm": "^3",
     "solid-js": "^1.7"
   },
-  "scripts": {
-    "prepublishOnly": "pridepack clean && pridepack build",
-    "build": "pridepack build",
-    "type-check": "pridepack check",
-    "clean": "pridepack clean"
-  },
-  "description": "SolidJS bindings for Tiptap",
-  "repository": {
-    "url": "https://github.com/lxsmnsyc/solid-tiptap.git",
-    "type": "git"
-  },
-  "homepage": "https://github.com/lxsmnsyc/solid-tiptap/tree/main/packages/solid-tiptap",
-  "bugs": {
-    "url": "https://github.com/lxsmnsyc/solid-tiptap/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": "Alexis Munsayac",
-  "private": false,
-  "typesVersions": {
-    "*": {}
+  "engines": {
+    "node": ">=18"
   }
 }
