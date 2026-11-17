@@ -212,8 +212,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/solid-tiptap
       terracotta:
-        specifier: 2.0.0-next.9
-        version: 2.0.0-next.9(@solidjs/web@2.0.0(solid-js@2.0.0))(solid-js@2.0.0)
+        specifier: 2.0.0
+        version: 2.0.0(@solidjs/web@2.0.0(solid-js@2.0.0))(solid-js@2.0.0)
     devDependencies:
       '@solidjs/vite-plugin':
         specifier: 3.0.0
@@ -2119,11 +2119,11 @@ packages:
     resolution: {integrity: sha512-9zN4uH2OQeQAYbF4BmIzoaa+L5Hb8Dp6kkP6ZXobHQ1FZVICdmzREPDVDBJY7umzdAE8D6zbFfWhxGtagkyslA==}
     engines: {node: '>=22.12.0'}
 
-  solid-use@1.0.0-next.3:
-    resolution: {integrity: sha512-bEUzCWEKEYIYr807QNUQfewX3MlaIYExZFKuM3S9kK3pc4tlnpc0YPKnpQp28Inmtd3DzLkmK9Zq1UC1xVM7Gw==}
+  solid-use@1.0.0:
+    resolution: {integrity: sha512-luOtSE7xOvtJ0VgWu9mo4CeMF68K8TWhPSOvcte25PHPYiMpY3cePH7iChMQCXd2aFa3vENjzJ4EWimGaKB/gA==}
     engines: {node: '>=20'}
     peerDependencies:
-      solid-js: ^2.0.0-rc.5
+      solid-js: ^2.0.0
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -2147,12 +2147,12 @@ packages:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
 
-  terracotta@2.0.0-next.9:
-    resolution: {integrity: sha512-kg5T5EiYfxsFumnGSQ6NB3g8UdvbNULcbbIR2KRCI3W5AJ42WqtgJqngklOX28e+LsXs62ibd3HnfGa7F7NXww==}
+  terracotta@2.0.0:
+    resolution: {integrity: sha512-bb/toJg+wu6e4G43nKdvyGzmLs8IdroNpoBUNA4oyKEl73C7tzTSiivRHyFxpd2YGQHhbXz2OUOPPRbHvkK6MQ==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@solidjs/web': ^2.0.0-rc.0
-      solid-js: ^2.0.0-rc.0
+      '@solidjs/web': ^2.0.0
+      solid-js: ^2.0.0
 
   tinybench@6.2.0:
     resolution: {integrity: sha512-78U2TlB2CnVenajOFzf3BKSm0J6oz5L0NV7g32LCPccvYc0lbWvys4d3uUUCS2B1N8PAf2+aekR8i1KbC3HO7Q==}
@@ -4000,7 +4000,7 @@ snapshots:
       seroval: 1.8.1
       seroval-plugins: 1.8.0(seroval@1.8.1)
 
-  solid-use@1.0.0-next.3(solid-js@2.0.0):
+  solid-use@1.0.0(solid-js@2.0.0):
     dependencies:
       solid-js: 2.0.0
 
@@ -4022,11 +4022,11 @@ snapshots:
 
   tapable@2.3.3: {}
 
-  terracotta@2.0.0-next.9(@solidjs/web@2.0.0(solid-js@2.0.0))(solid-js@2.0.0):
+  terracotta@2.0.0(@solidjs/web@2.0.0(solid-js@2.0.0))(solid-js@2.0.0):
     dependencies:
       '@solidjs/web': 2.0.0(solid-js@2.0.0)
       solid-js: 2.0.0
-      solid-use: 1.0.0-next.3(solid-js@2.0.0)
+      solid-use: 1.0.0(solid-js@2.0.0)
 
   tinybench@6.2.0: {}
 
