@@ -9,15 +9,15 @@
 ## Install
 
 ```bash
-npm i solid-tiptap@next @tiptap/core @tiptap/pm
+npm i solid-tiptap @tiptap/core @tiptap/pm
 ```
 
 ```bash
-yarn add solid-tiptap@next @tiptap/core @tiptap/pm
+yarn add solid-tiptap @tiptap/core @tiptap/pm
 ```
 
 ```bash
-pnpm add solid-tiptap@next @tiptap/core @tiptap/pm
+pnpm add solid-tiptap @tiptap/core @tiptap/pm
 ```
 
 You also need the Tiptap extensions you plan to use, such as `@tiptap/starter-kit`.
@@ -28,7 +28,7 @@ You also need the Tiptap extensions you plan to use, such as `@tiptap/starter-ki
 - `@tiptap/core` and `@tiptap/pm` 3.x.
 - Node.js 22.12 or later, if you import the package in Node.js.
 
-Use `solid-tiptap@0.8` for Solid 1.x, and `solid-tiptap@0.7` for Solid 1.x with Tiptap 2.
+Solid 1.x users: use the `solid-1` branch, or the previous major (`solid-tiptap@0.9` for Solid 1.x, `solid-tiptap@0.7` for Solid 1.x with Tiptap 2).
 
 ## Usage
 

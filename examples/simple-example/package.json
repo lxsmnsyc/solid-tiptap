@@ -10,17 +10,17 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@solidjs/web": "2.0.0-rc.13",
+    "@solidjs/web": "2.0.0",
     "@tiptap/core": "^3.31.4",
     "@tiptap/extension-bubble-menu": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",
-    "solid-js": "2.0.0-rc.13",
+    "solid-js": "2.0.0",
     "solid-tiptap": "workspace:*",
     "terracotta": "2.0.0-next.9"
   },
   "devDependencies": {
-    "@solidjs/vite-plugin": "3.0.0-next.47",
+    "@solidjs/vite-plugin": "3.0.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "tailwindcss": "^4.3.3",

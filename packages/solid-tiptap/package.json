@@ -1,6 +1,6 @@
 {
   "name": "solid-tiptap",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "SolidJS bindings for Tiptap",
   "keywords": [
     "editor",
@@ -42,15 +42,15 @@
     "watch": "tsdown --watch"
   },
   "devDependencies": {
-    "@solidjs/vite-plugin": "3.0.0-next.47",
-    "@solidjs/web": "2.0.0-rc.13",
+    "@solidjs/vite-plugin": "3.0.0",
+    "@solidjs/web": "2.0.0",
     "@tiptap/core": "^3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",
     "@types/node": "^26.6.4",
     "jsdom": "^30.1.1",
     "publint": "^0.3.25",
-    "solid-js": "2.0.0-rc.13",
+    "solid-js": "2.0.0",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.3"
@@ -58,7 +58,7 @@
   "peerDependencies": {
     "@tiptap/core": "^3",
     "@tiptap/pm": "^3",
-    "solid-js": "^2.0.0-rc.13"
+    "solid-js": "^2.0.0"
   },
   "engines": {
     "node": ">=22.12.0"
