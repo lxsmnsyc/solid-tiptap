@@ -1,10 +1,11 @@
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import BubbleMenu from '@tiptap/extension-bubble-menu';
 import StarterKit from '@tiptap/starter-kit';
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
 import { Show, createSignal } from 'solid-js';
 import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap';
-import { Toggle, Toolbar } from 'terracotta';
+import { Toggle } from 'terracotta/toggle';
+import { Toolbar } from 'terracotta/toolbar';
 
 function ParagraphIcon(props: JSX.IntrinsicElements['svg'] & { title: string }): JSX.Element {
   return (
@@ -161,10 +162,11 @@ function Control(props: ControlProps): JSX.Element {
   return (
     <Toggle
       pressed={active()}
-      class={`${props.class ?? ''} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400`}
-      classList={{
-        'bg-white/25': active(),
-      }}
+      class={[
+        props.class,
+        'w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400',
+        { 'bg-white/25': active() },
+      ]}
       title={props.title}
       onChange={() => {
         props.command(props.editor.chain().focus()).run();
@@ -293,7 +295,7 @@ export default function App(): JSX.Element {
   const [menu, setMenu] = createSignal<HTMLDivElement>();
 
   const editor = createTiptapEditor(() => ({
-    element: container()!,
+    element: container(),
     extensions: [
       StarterKit,
       BubbleMenu.configure({

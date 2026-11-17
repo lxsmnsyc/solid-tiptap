@@ -1,13 +1,14 @@
 import type { EditorOptions, JSONContent } from '@tiptap/core';
 import { Editor } from '@tiptap/core';
-import { createEffect, createSignal, onCleanup } from 'solid-js';
+import { createEffect, createSignal, onSettled } from 'solid-js';
 
 export type EditorRef = Editor | ((editor: Editor) => void);
 
 export type BaseEditorOptions = Omit<Partial<EditorOptions>, 'element'>;
 
-export interface UseEditorOptions<T extends HTMLElement> extends BaseEditorOptions {
-  element: T;
+export interface UseEditorOptions extends BaseEditorOptions {
+  // The editor is created once this is set.
+  element: HTMLElement | null | undefined;
 }
 
 /**
@@ -18,20 +19,21 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
   instance: () => V,
   read: (value: V) => T,
 ): () => T {
-  const [depend, update] = createSignal(undefined, { equals: false });
+  // Tiptap emits transactions from its own listeners, which can run inside a
+  // reactive scope, so the signal allows writes from owned scopes.
+  const [depend, update] = createSignal(undefined, { equals: false, ownedWrite: true });
 
-  function forceUpdate(): void {
-    update();
-  }
-
-  createEffect(() => {
-    const editor = instance();
-    if (editor) {
-      editor.on('transaction', forceUpdate);
-      onCleanup(() => {
-        editor.off('transaction', forceUpdate);
-      });
+  createEffect(instance, (editor) => {
+    if (!editor) {
+      return undefined;
     }
+    const forceUpdate = (): void => {
+      update();
+    };
+    editor.on('transaction', forceUpdate);
+    return () => {
+      editor.off('transaction', forceUpdate);
+    };
   });
 
   return () => {
@@ -42,25 +44,34 @@ export function createEditorTransaction<T, V extends Editor | undefined>(
 
 /**
  * Creates a Tiptap editor from the given options.
- * The editor is destroyed and created again when a signal read by `props` changes.
+ * The editor is created once `element` is set.
+ * It is destroyed and created again when a signal read by `props` changes.
  * It is also destroyed when the owner is disposed.
  */
-export default function useEditor<T extends HTMLElement>(
-  props: () => UseEditorOptions<T>,
-): () => Editor | undefined {
-  const [signal, setSignal] = createSignal<Editor>();
+export default function useEditor(props: () => UseEditorOptions): () => Editor | undefined {
+  // The editor is written from the effect, which runs in an owned scope.
+  const [signal, setSignal] = createSignal<Editor | undefined>(undefined, { ownedWrite: true });
 
-  createEffect(() => {
-    const instance = new Editor({
-      ...props(),
-    });
-
-    onCleanup(() => {
-      instance.destroy();
-    });
-
-    setSignal(instance);
+  // Refs are assigned after the component body runs. Reading the options only
+  // after the first settle lets `element` come from a plain `let` ref too.
+  const [settled, setSettled] = createSignal(false, { ownedWrite: true });
+  onSettled(() => {
+    setSettled(true);
   });
+
+  createEffect(
+    () => (settled() ? props() : undefined),
+    (options) => {
+      if (!options?.element) {
+        return undefined;
+      }
+      const instance = new Editor({ ...options });
+      setSignal(instance);
+      return () => {
+        instance.destroy();
+      };
+    },
+  );
 
   return signal;
 }

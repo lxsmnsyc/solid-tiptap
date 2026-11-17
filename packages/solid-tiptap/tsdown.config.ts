@@ -2,10 +2,10 @@ import { defineConfig } from 'tsdown';
 
 export default defineConfig({
   entry: ['src/index.ts'],
-  // CJS is kept so `require()` users on the 0.x line keep working.
-  format: ['esm', 'cjs'],
+  // Solid 2 ships ESM only, so this package does too.
+  format: ['esm'],
   platform: 'neutral',
-  target: 'es2018',
+  target: 'es2022',
   dts: true,
   sourcemap: true,
   clean: true,
